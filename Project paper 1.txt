@@ -1,0 +1,77 @@
+Project paper 1(fig 1)
+
+** For NMOS [D G S bulk CMOSN W L]
+* The first line is always a comment line.
+* Case-insensitive
+
+* Control
+.option post INGOLD=2
+
+* Include the following file to load transistor models.
+.include './45nm_PTM_HP_v2.1.pm'
+
+* Parameters
+.param Vsup = 1.0V
+
+mn1 nY1 nA/clk 0 0 NMOS_HP L=45n W=90n
+mp1 nY1 nA/clk nVdd nVdd PMOS_HP L=45n W=140n
+
+***Second Inverter
+mn2 nY2 nY1 0 0 NMOS_HP L=45n W=90n
+mp2 nY2 nY1 nVdd nVdd PMOS_HP L=45n W=140n
+
+* Third Inverter
+mn3 nY3 nY2 0 0 NMOS_HP L=45n W=90n
+mp3 nY3 nY2 nVdd nVdd PMOS_HP L=45n W=140n
+
+*Transistor 1
+mn4 nY4 nY3 0 0 NMOS_HP L=45n W=90n
+mn5 nY5 nA/clk nY4 0 NMOS_HP L=45n W=90n
+mn6 nY6 D nY5 0 NMOS_HP L=45n W=90n
+mp3 nY6 nA/clk nVdd nVdd PMOS_HP L=45n W=90n
+
+**Inverter 4
+mn7 nY7 nY6 0 0 NMOS_HP L=45n W=90n
+mp4 nY7 nY6 nVdd nVdd PMOS_HP L=45n W=90n
+
+**Inverter 5
+mn8 nY6 nY7 0 0 NMOS_HP L=45n W=90n
+mp4 nY6 nY7 nVdd nVdd PMOS_HP L=45n W=90n
+
+mp5 nY8 nY6 nVdd nVdd PMOS_HP L=45n W=90n
+
+mn8 nY8 nA/clk nY9 0 NMOS_HP L=45n W=90n
+mn9 nY9 nY6 0 0 NMOS_HP L=45n W=90n
+
+**Inverter 6
+mn10 nY8 nY10 0 0 NMOS_HP L=45n W=90n
+mp6 nY8 nY10 nVdd nVdd PMOS_HP L=45n W=90n
+
+**Inverter 7
+mn11 nY10 nY8 0 0 NMOS_HP L=45n W=90n
+mp7 nY10 nY8 nVdd nVdd PMOS_HP L=45n W=90n
+
+**Inverter 7
+mn12 nY8 qbar 0 0 NMOS_HP L=45n W=90n
+mp7 nY8 qbar nVdd nVdd PMOS_HP L=45n W=90n
+
+
+cout qbar 0 10f
+
+VDD nVdd 0 Vsup
+
+**VA nA 0 PWL 0p 0 200p 0 210p Vsup 1n Vsup 1.01n 0 2n 0
+
+**Clk signal
+VCK nClk 0 PWL 0p 0 1n 0 1.01n Vsup 2n Vsup 2.01n 0 3n 0 3.01n Vsup 4n Vsup 4.01n 0 5n 0 5.01n Vsup 6n Vsup 6.01n 0 7n 0 7.01n Vsup 8n Vsup
+
+**Input signal D
+VD nD 0 PWL 0p 0 1.5n 0 1.51n Vsup 3.5n Vsup 3.51n 0 5.5n 0 5.51n Vsup 7.5n Vsup 7.51n 0
+
+* Simulation
+.tr 1p 5n
+
+.DC VA 0 Vsup 0.01
+.plot v(nY)
+
+.end
